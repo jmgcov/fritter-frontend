@@ -2,20 +2,24 @@ import type {Request, Response} from 'express';
 import express from 'express';
 import FreetCollection from '../freet/collection';
 import UserCollection from './collection';
-import * as userValidator from '../user/middleware';
+import * as userValidator from './middleware';
 import * as util from './util';
+import BookmarkCollection from '../bookmark/collection';
+import EventCollection from '../event_announcement/collection';
+import LikeCollection from '../like/collection';
+import ReaderModeCollection from '../readerMode/collection';
 
 const router = express.Router();
 
 /**
- * Get the signed in user
- * TODO: may need better route and documentation
- * (so students don't accidentally delete this when copying over)
- *
- * @name GET /api/users/session
- *
- * @return - currently logged in user, or null if not logged in
- */
+* Get the signed in user
+* TODO: may need better route and documentation
+* (so students don't accidentally delete this when copying over)
+*
+* @name GET /api/users/session
+*
+* @return - currently logged in user, or null if not logged in
+*/
 router.get(
   '/session',
   [],
@@ -108,6 +112,11 @@ router.post(
   async (req: Request, res: Response) => {
     const user = await UserCollection.addOne(req.body.username, req.body.password);
     req.session.userId = user._id.toString();
+
+    // SYNC - when creating a new user, also create a ReaderMode associated with that user,
+    // initialized to false
+    await ReaderModeCollection.addOne(req.session.userId);
+
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.username}`,
       user: util.constructUserResponse(user)
@@ -161,7 +170,14 @@ router.delete(
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     await UserCollection.deleteOne(userId);
+
+    // SYNCS - DELETING A USER DELETES ALL OF THEIR ASSOCIATED CONTENT
     await FreetCollection.deleteMany(userId);
+    await BookmarkCollection.deleteMany(userId);
+    await EventCollection.deleteMany(userId);
+    await LikeCollection.deleteMany(userId);
+    await ReaderModeCollection.deleteMany(userId);
+
     req.session.userId = undefined;
     res.status(200).json({
       message: 'Your account has been deleted successfully.'

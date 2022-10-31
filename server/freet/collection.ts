@@ -31,6 +31,17 @@ class FreetCollection {
     return freet.populate('authorId');
   }
 
+  // TODO - WAS THE PROBLEM HERE?
+  // /**
+  //  * Find a freet by freetId
+  //  *
+  //  * @param {string} freetId - The id of the freet to find
+  //  * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
+  //  */
+  // static async findOne(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+  //   return FreetModel.findOne({_id: freetId});
+  // }
+
   /**
    * Find a freet by freetId
    *

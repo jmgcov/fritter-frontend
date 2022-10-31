@@ -29,7 +29,9 @@ const isValidUsername = (req: Request, res: Response, next: NextFunction) => {
   const usernameRegex = /^\w+$/i;
   if (!usernameRegex.test(req.body.username)) {
     res.status(400).json({
-      error: 'Username must be a nonempty alphanumeric string.'
+      error: {
+        error: 'Username must be a nonempty alphanumeric string.'
+      }
     });
     return;
   }
@@ -44,7 +46,9 @@ const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
   const passwordRegex = /^\S+$/;
   if (!passwordRegex.test(req.body.password)) {
     res.status(400).json({
-      error: 'Password must be a nonempty string.'
+      error: {
+        error: 'Password must be a nonempty string.'
+      }
     });
     return;
   }
@@ -89,14 +93,14 @@ const isUsernameNotAlreadyInUse = async (req: Request, res: Response, next: Next
       });
       return;
     }
-  }
 
-  next();
+    next();
+  }
 };
 
 /**
- * Checks if the user is logged in, that is, whether the userId is set in session
- */
+  * Checks if the user is logged in, that is, whether the userId is set in session
+  */
 const isUserLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.userId) {
     res.status(403).json({
@@ -109,8 +113,8 @@ const isUserLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
- * Checks if the user is signed out, that is, userId is undefined in session
- */
+* Checks if the user is signed out, that is, userId is undefined in session
+*/
 const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
   if (req.session.userId) {
     res.status(403).json({
@@ -144,6 +148,47 @@ const isAuthorExists = async (req: Request, res: Response, next: NextFunction) =
   next();
 };
 
+/**
+ * Checks if a user with username in req.query.username exists
+ */
+const isUserExists = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.query.username) {
+    res.status(400).json({
+      error: 'Provided username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.query.username as string);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with username ${req.query.username as string} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
+// TODO - DELETE IF NOT NEEDED
+// /**
+//  * Checks if a bookmark with bookmarkId is req.params exists
+//  */
+// const isUserExists_paramsVersion = async (req: Request, res: Response, next: NextFunction) => {
+//   const validFormat = Types.ObjectId.isValid(req.params.userId);
+//   const user = validFormat ? await UserCollection.findOneByUserId(req.params.userId) : '';
+//   if (!user) {
+//     res.status(404).json({
+//       error: {
+//         userNotFound: `User with user ID ${req.params.userId} does not exist.`
+//       }
+//     });
+//     return;
+//   }
+
+//   next();
+// };
+
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
@@ -152,5 +197,6 @@ export {
   isAccountExists,
   isAuthorExists,
   isValidUsername,
-  isValidPassword
+  isValidPassword,
+  isUserExists
 };
