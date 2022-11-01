@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, { mapActions } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
@@ -15,6 +15,7 @@ const store = new Vuex.Store({
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     allBookmarkedFreetIds: [], // the freetIds of all of the freets that are bookmarked by this user
     bookmarkedFreets: [], // all of the bookmarked freets
+    freetIdToBookmarkId: new Map(),
   },
   mutations: {
     alert(state, payload) {
@@ -66,9 +67,11 @@ const store = new Vuex.Store({
 
       const theseIds = [];
       const theseFreets = [];
+      const thisMapping = new Map();
     
       for (const bookmarkResponse of res) {
-        theseIds.push(bookmarkResponse.freet)
+        theseIds.push(bookmarkResponse.freet);
+        thisMapping.set(bookmarkResponse.freet, bookmarkResponse._id);
       }
 
       for (const freet of state.freets) {
@@ -82,6 +85,7 @@ const store = new Vuex.Store({
 
     state.allBookmarkedFreetIds = theseIds;
     state.bookmarkedFreets = theseFreets;
+    state.freetIdToBookmarkId = thisMapping;
   }
 
 

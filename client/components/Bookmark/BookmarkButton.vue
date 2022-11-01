@@ -28,37 +28,32 @@ export default {
   },
   data() {
     return {
-      bookmarked: false, // Whether this freet is bookmarked by this user
+      bookmarkId: '', //the bookmarkId for the bookmark of this freet, if any
     }
   },
   async mounted() {
     // Check whether this freet is bookmarked by this user
-    console.log("Calling refresh bookmarks from mounted");
+    // console.log("Calling refresh bookmarks from mounted");
     this.$store.commit('refreshBookmarks');
 
     const allBookmarkedFreetIds = this.$store.state.allBookmarkedFreetIds;
-    console.log('allBookmarkedFreetIds from mounted', allBookmarkedFreetIds);
-    console.log('this freet id', this.freet._id);
+    // console.log('allBookmarkedFreetIds from mounted', allBookmarkedFreetIds);
+    // console.log('this freet id', this.freet._id);
 
     if (allBookmarkedFreetIds.includes(this.freet._id)) {
-      this.bookmarked = true;
+      
+      const options = {
+          method: 'GET', headers: {'Content-Type': 'application/json'}
+      };
+
+      const res = await fetch(`/api/bookmark?username=${this.$store.state.username}`, options).then(async r => r.json());
+
+      for (const bookmarkResponse in res) {
+        if (bookmarkResponse.freet === this.freet._id) {
+          this.bookmarkId = bookmarkResponse.freet;
+        }
+      }
     }
-
-    console.log('status of bookmarked', this.bookmarked)
-
-    
-    // const options = {
-    //     method: 'GET', headers: {'Content-Type': 'application/json'}
-    // };
-
-    // const res = await fetch(`/api/bookmark?username=${this.$store.state.username}`, options).then(async r => r.json());
-
-    // for (const bookmarkResponse in res) {
-    //   if (bookmarkResponse.freet === this.freet.id) {
-    //     this.bookmarked = true;
-    //     this.bookmarkId = bookmarkResponse._id;
-    //   }
-    // }
   },
   methods: {
     async addBookmark() {
@@ -81,8 +76,8 @@ export default {
 
       const r = await fetch(`/api/bookmark`, options);
       const res = await r.json();
+      this.bookmarkId = res.bookmark._id;
 
-      this.bookmarked = true;
       this.$store.commit('refreshBookmarks');
     },
     removeBookmark() {
@@ -94,8 +89,9 @@ export default {
           });
         }
       };
+
+      this.$store.commit('refreshBookmarks');
       this.request(params);
-      this.bookmarked = false;
     },
     async request(params) {
       /**
@@ -104,6 +100,10 @@ export default {
        * @param params.body - Body for the request, if it exists
        * @param params.callback - Function to run if the the request succeeds
        */
+      
+      const bookmarkId = this.$store.state.freetIdToBookmarkId.get(this.freet._id);
+      console.log('bookmarkId to delete', bookmarkId)
+
       const options = {
         method: params.method, headers: {'Content-Type': 'application/json'}
       };
@@ -112,9 +112,7 @@ export default {
       }
 
       try {
-        console.log("now deleting");
-        console.log('bookmarkId', this.bookmarkId)
-        const r = await fetch(`/api/bookmark/${this.bookmarkId}`, options);
+        const r = await fetch(`/api/bookmark/${bookmarkId}`, options);
         if (!r.ok) {
           const res = await r.json();
           throw new Error(res.error);
