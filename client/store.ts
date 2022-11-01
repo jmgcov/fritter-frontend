@@ -12,7 +12,9 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     username: null, // Username of the logged in user
-    alerts: {} // global success/error messages encountered during submissions to non-visible forms
+    alerts: {}, // global success/error messages encountered during submissions to non-visible forms
+    allBookmarkedFreetIds: [], // the freetIds of all of the freets that are bookmarked by this user
+    bookmarkedFreets: [], // all of the bookmarked freets
   },
   mutations: {
     alert(state, payload) {
@@ -53,6 +55,36 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     },
+    async refreshBookmarks(state) {
+      console.log('refreshBookmarks');
+
+      const options = {
+        method: 'GET', headers: {'Content-Type': 'application/json'}
+      };
+
+      const res = await fetch(`/api/bookmark?username=${state.username}`, options).then(async r => r.json());
+
+      const theseIds = [];
+      const theseFreets = [];
+    
+      for (const bookmarkResponse of res) {
+        theseIds.push(bookmarkResponse.freet)
+      }
+
+      for (const freet of state.freets) {
+        if (freet.id in theseIds) {
+          theseFreets.push(freet);
+        }
+      }
+    
+    console.log('theseIds', theseIds);
+    console.log('theseFreets', theseFreets);
+
+    state.allBookmarkedFreetIds = theseIds;
+    state.bookmarkedFreets = theseFreets;
+  }
+
+
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]

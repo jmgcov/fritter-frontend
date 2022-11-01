@@ -3,16 +3,16 @@
 <template>
   <div>
     <button 
-      v-if="!bookmarked"
-      @click="addBookmark"
-    >
-      🔖 Add Bookmark 
-    </button>
-    <button 
-      v-if="bookmarked"
+      v-if="$store.state.allBookmarkedFreetIds.includes(freet._id)"
       @click="removeBookmark"
     >
       Remove Bookmark 
+    </button>
+    <button 
+      v-else
+      @click="addBookmark"
+    >
+      🔖 Add Bookmark 
     </button>
   </div>
 </template>
@@ -29,23 +29,36 @@ export default {
   data() {
     return {
       bookmarked: false, // Whether this freet is bookmarked by this user
-      bookmarkId: '', // The bookmarkId, if this freet is bookmarked by this user
     }
   },
   async mounted() {
     // Check whether this freet is bookmarked by this user
-    const options = {
-        method: 'GET', headers: {'Content-Type': 'application/json'}
-    };
+    console.log("Calling refresh bookmarks from mounted");
+    this.$store.commit('refreshBookmarks');
 
-    const res = await fetch(`/api/bookmark?username=${this.$store.state.username}`, options).then(async r => r.json());
+    const allBookmarkedFreetIds = this.$store.state.allBookmarkedFreetIds;
+    console.log('allBookmarkedFreetIds from mounted', allBookmarkedFreetIds);
+    console.log('this freet id', this.freet._id);
 
-    for (const bookmarkResponse in res) {
-      if (bookmarkResponse.freet === this.freet.id) {
-        this.bookmarked = true;
-        this.bookmarkId = bookmarkResponse._id;
-      }
+    if (allBookmarkedFreetIds.includes(this.freet._id)) {
+      this.bookmarked = true;
     }
+
+    console.log('status of bookmarked', this.bookmarked)
+
+    
+    // const options = {
+    //     method: 'GET', headers: {'Content-Type': 'application/json'}
+    // };
+
+    // const res = await fetch(`/api/bookmark?username=${this.$store.state.username}`, options).then(async r => r.json());
+
+    // for (const bookmarkResponse in res) {
+    //   if (bookmarkResponse.freet === this.freet.id) {
+    //     this.bookmarked = true;
+    //     this.bookmarkId = bookmarkResponse._id;
+    //   }
+    // }
   },
   methods: {
     async addBookmark() {
@@ -70,7 +83,7 @@ export default {
       const res = await r.json();
 
       this.bookmarked = true;
-      this.bookmarkId = res.bookmark._id;
+      this.$store.commit('refreshBookmarks');
     },
     removeBookmark() {
       const params = {
@@ -83,7 +96,6 @@ export default {
       };
       this.request(params);
       this.bookmarked = false;
-      this.bookmarkId = '';
     },
     async request(params) {
       /**
@@ -113,6 +125,8 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
+
+      this.$store.commit('refreshBookmarks');
     }
   }
 };

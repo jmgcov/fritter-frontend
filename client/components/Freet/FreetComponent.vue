@@ -9,7 +9,10 @@
       <h3 class="author">
         @{{ freet.author }}
       </h3>
-      <div id="likeAndBookmark">
+      <div
+        v-if="$store.state.username" 
+        id="likeAndBookmark"
+      >
         <bookmarkButton 
           :key="componentKey"
           :freet="freet"  
