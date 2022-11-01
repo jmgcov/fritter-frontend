@@ -75,13 +75,10 @@ const store = new Vuex.Store({
       }
 
       for (const freet of state.freets) {
-        if (freet.id in theseIds) {
+        if (theseIds.includes(freet._id)) {
           theseFreets.push(freet);
         }
       }
-    
-    console.log('theseIds', theseIds);
-    console.log('theseFreets', theseFreets);
 
     state.allBookmarkedFreetIds = theseIds;
     state.bookmarkedFreets = theseFreets;

@@ -16,6 +16,12 @@
       </router-link>
       <router-link
         v-if="$store.state.username"
+        to="/bookmarks"
+      >
+        Bookmarks
+      </router-link>
+      <router-link
+        v-if="$store.state.username"
         to="/account"
       >
         Account
