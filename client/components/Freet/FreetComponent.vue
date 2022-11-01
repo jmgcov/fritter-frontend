@@ -10,7 +10,10 @@
         @{{ freet.author }}
       </h3>
       <div id="likeAndBookmark">
-        <bookmarkButton :freet="freet" />
+        <bookmarkButton 
+          :key="componentKey"
+          :freet="freet"  
+        />
       </div>
       <div
         v-if="$store.state.username === freet.author"
@@ -84,7 +87,8 @@ export default {
     return {
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
-      alerts: {} // Displays success/error messages encountered during freet modification
+      alerts: {}, // Displays success/error messages encountered during freet modification
+      componentKey: 0, 
     };
   },
   methods: {
@@ -138,6 +142,14 @@ export default {
       };
       this.request(params);
     },
+    forceRenderer() {
+      this.componentKey += 1;
+      // The "forceRenderer" code in this component, which forces certain elements to rerender
+      // when their state is affected indirectly by other actions (such as the automatic deletion of
+      // a bookmark when the underlying freet is deleted), comes from the following source:
+      // url: https://michaelnthiessen.com/force-re-render/
+      // date retrieved:  11/01/2022
+    },
     async request(params) {
       /**
        * Submits a request to the freet's endpoint
@@ -167,6 +179,8 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
+
+      this.forceRenderer();
     }
   }
 };

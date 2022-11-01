@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       bookmarked: false, // Whether this freet is bookmarked by this user
-      bookmarkId: '', 
+      bookmarkId: '',
     }
   },
   async mounted() {
@@ -80,19 +80,6 @@ export default {
       this.bookmarked = true;
       this.bookmarkId = res.bookmark._id;
       console.log('on add bookmark, setting bookmarkId to', this.bookmarkId)
-    },
-    addBookmark_old() {
-      const params = {
-        method: 'POST',
-        message: 'Successfully added bookmark!',
-        body: JSON.stringify({ freetId: this.freet._id }),
-        callback: () => {
-          this.$set(this.alerts, params.message, 'success');
-          setTimeout(() => this.$delete(this.alerts, params.message), 3000);
-        }
-      }
-      this.request(params);
-      this.bookmarked = true;
     },
     removeBookmark() {
       const params = {
