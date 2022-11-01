@@ -37,6 +37,7 @@
             value="author"
             placeholder="🔍 Filter by author (optional)"
             button="🔄 Get freets"
+            user="$store.state.username"
           />
         </div>
       </header>

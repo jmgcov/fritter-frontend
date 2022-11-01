@@ -10,7 +10,12 @@
         @{{ freet.author }}
       </h3>
       <div id="likeAndBookmark">
-        <bookmarkButton :freet="freet" />
+        <button 
+          v-if="!bookmarked"
+          @click="addBookmark"
+        >
+          🔖 Add Bookmark 
+        </button>
       </div>
       <div
         v-if="$store.state.username === freet.author"
@@ -68,11 +73,8 @@
 </template>
 
 <script>
-import BookmarkButton from '@/components/Bookmark/BookmarkButton.vue'
-
 export default {
   name: 'FreetComponent',
-  components: {BookmarkButton},
   props: {
     // Data from the stored freet
     freet: {
@@ -84,9 +86,29 @@ export default {
     return {
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
-      alerts: {} // Displays success/error messages encountered during freet modification
+      alerts: {}, // Displays success/error messages encountered during freet modification
+      // bookmarked: false // Whether this freet is bookmarked by this user
     };
   },
+  // async mounted() {
+  //   // Check whether this freet is bookmarked by this user
+  //   const options = {
+  //       method: 'GET', headers: {'Content-Type': 'application/json'}
+  //   };
+
+  //   const res = await fetch(`/api/bookmark?username=${this.$store.state.username}`, options).then(async r => r.json());
+
+  //   for (const bookmarkResponse in res) {
+  //     if (bookmarkResponse.freet === this.freet.id) {
+  //       this.bookmarked = true;
+  //     }
+  //   }
+
+  //   console.log('freetId', this.freet.id);
+  //   console.log('res', res);
+  //   console.log('bookmarked', this.bookmarked);
+
+  // },
   methods: {
     startEditing() {
       /**
@@ -138,6 +160,18 @@ export default {
       };
       this.request(params);
     },
+    // addBookmark() {
+    //   const params = {
+    //     method: 'POST',
+    //     message: 'Successfully added bookmark!',
+    //     body: JSON.stringify({ freetId: this.freet._id }),
+    //     callback: () => {
+    //       this.$set(this.alerts, params.message, 'success');
+    //       setTimeout(() => this.$delete(this.alerts, params.message), 3000);
+    //     }
+    //   }
+    //   this.bookmarkRequest(params);
+    // },
     async request(params) {
       /**
        * Submits a request to the freet's endpoint
@@ -167,7 +201,37 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
-    }
+    },
+    // async bookmarkRequest(params) {
+    //   /**
+    //    * Submits a request to the bookmark endpoint
+    //    * @param params - Options for the request
+    //    * @param params.body - Body for the request, if it exists
+    //    * @param params.callback - Function to run if the the request succeeds
+    //    */
+    //   const options = {
+    //     method: params.method, headers: {'Content-Type': 'application/json'}
+    //   };
+    //   if (params.body) {
+    //     options.body = params.body;
+    //   }
+
+    //   try {
+    //     const r = await fetch(`/api/bookmark/`, options);
+    //     if (!r.ok) {
+    //       const res = await r.json();
+    //       throw new Error(res.error);
+    //     }
+
+    //     // this.editing = false;
+    //     this.$store.commit('refreshFreets');
+
+    //     params.callback();
+    //   } catch (e) {
+    //     this.$set(this.alerts, e, 'error');
+    //     setTimeout(() => this.$delete(this.alerts, e), 3000);
+    //   }
+    // }
   }
 };
 </script>

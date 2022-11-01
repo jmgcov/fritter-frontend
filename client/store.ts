@@ -52,7 +52,7 @@ const store = new Vuex.Store({
       const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
-    }
+    },
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
