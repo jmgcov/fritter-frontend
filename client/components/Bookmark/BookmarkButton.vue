@@ -3,7 +3,7 @@
 <template>
   <div>
     <button 
-      v-if="$store.state.allBookmarkedFreetIds.includes(freet._id)"
+      v-if="isBookmarked"
       @click="removeBookmark"
     >
       Remove Bookmark 
@@ -29,6 +29,11 @@ export default {
   data() {
     return {
       bookmarkId: '', //the bookmarkId for the bookmark of this freet, if any
+    }
+  },
+  computed: {
+    isBookmarked() {
+      return this.$store.state.allBookmarkedFreetIds.includes(this.freet._id)
     }
   },
   async mounted() {

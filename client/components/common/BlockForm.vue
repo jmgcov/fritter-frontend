@@ -12,14 +12,21 @@
         :key="field.id"
       >
         <label :for="field.id">{{ field.label }}:</label>
+        <input
+          v-if="field.id === 'eventDate'"
+          type="datetime-local"
+          :name="field.id"
+          :value="field.value"
+          @input="field.value = $event.target.value"
+        /> 
         <textarea
-          v-if="field.id === 'content'"
+          v-if="field.id === 'content' || field.id === 'eventDescription'"
           :name="field.id"
           :value="field.value"
           @input="field.value = $event.target.value"
         />
         <input
-          v-else
+          v-if="field.id !== 'content' && field.id !== 'eventDate' && field.id !== 'eventDescription' "
           :type="field.id === 'password' ? 'password' : 'text'"
           :name="field.id"
           :value="field.value"
@@ -101,6 +108,10 @@ export default {
 
         if (this.refreshFreets) {
           this.$store.commit('refreshFreets');
+        }
+
+        if (this.refreshEvents) {
+          this.$store.commit('refreshEventAnnouncements');
         }
 
         if (this.callback) {

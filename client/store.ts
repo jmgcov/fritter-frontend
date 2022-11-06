@@ -16,6 +16,16 @@ const store = new Vuex.Store({
     allBookmarkedFreetIds: [], // the freetIds of all of the freets that are bookmarked by this user
     bookmarkedFreets: [], // all of the bookmarked freets
     freetIdToBookmarkId: new Map(),
+
+    eventsFilter: null, // Username to filter shown event announcements by (null = show all)
+    eventAnnouncements: [], // All event announcements created in the app
+    freetsAssociatedWithEvents: [],
+    freetIdToEventId: new Map(),
+  },
+  getters: {
+    getFreetById: (state) => (freetId) => {
+      return state.freets.find(freet => freet._id === freetId)
+    }
   },
   mutations: {
     alert(state, payload) {
@@ -83,7 +93,46 @@ const store = new Vuex.Store({
     state.allBookmarkedFreetIds = theseIds;
     state.bookmarkedFreets = theseFreets;
     state.freetIdToBookmarkId = thisMapping;
-  }
+  },
+
+  // Event Announcements
+  updateEventsFilter(state, filter) {
+    /**
+     * Update the stored event announcements filter to the specified one.
+     * @param filter - Username of the user to filter events by
+     */
+    state.eventsFilter = filter;
+  },
+  updateEventAnnouncements(state, events) {
+    /**
+     * Update the stored event announcements to the provided event announcements.
+     * @param events - Event Announcements to store
+     */
+    state.eventAnnouncements = events;
+
+    // Record the freetIds of the freets associated with events
+    const theseAssociatedFreets = [];
+    const thisMapping = new Map();
+
+    for (const event of events) {
+      theseAssociatedFreets.push(event.associatedFreet)
+      thisMapping.set(event.associatedFreet, event._id);
+    }
+
+    state.freetsAssociatedWithEvents = theseAssociatedFreets;
+    state.freetIdToBookmarkId = thisMapping;
+  },
+  async refreshEventAnnouncements(state) {
+    /**
+     * Request the server for the currently available freets.
+     */
+    // TODO - is this a valid route?  Need to carry over changes to starter code?
+    const url = state.eventsFilter ? `/api/users/${state.eventsFilter}/freets` : '/api/events';
+    const res = await fetch(url).then(async r => r.json());
+    state.eventAnnouncements = res;
+  },
+
+  
 
 
   },
