@@ -11,7 +11,7 @@
       <section
         v-if="$store.state.allBookmarkedFreetIds.length"
       >
-        <FreetComponent
+        <FreetOrEventComponent
           v-for="freet in $store.state.bookmarkedFreets"
           :key="freet.id"
           :freet="freet"
@@ -27,13 +27,12 @@
 </template>
 
 <script>
-import FreetComponent from '@/components/Freet/FreetComponent.vue';
-// import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
+import FreetOrEventComponent from '@/components/common/FreetOrEventComponent.vue';
 import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
 
 export default {
   name: 'FreetPage',
-  components: {FreetComponent, GetFreetsForm},
+  components: {FreetOrEventComponent, GetFreetsForm},
   mounted() {
     console.log("Position 1")
     console.log("filter", this.$store.state.filter);

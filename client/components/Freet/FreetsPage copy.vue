@@ -44,7 +44,21 @@
       <section
         v-if="$store.state.freets.length"
       >
-        <FreetOrEventComponent
+        <div
+          v-for="freet in $store.state.freets"
+          :key="freet.id"
+          :freet="freet"
+        >
+          <EventAnnouncementComponent
+            v-if="isEvent"
+            :freet="freet"
+          />
+          <FreetComponent
+            v-else
+            :freet="freet"
+          />
+        </div>
+        <FreetComponent
           v-for="freet in $store.state.freets"
           :key="freet.id"
           :freet="freet"
@@ -60,14 +74,19 @@
 </template>
 
 <script>
-// import FreetComponent from '@/components/Freet/FreetComponent.vue';
+import FreetComponent from '@/components/Freet/FreetComponent.vue';
 import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
 import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
-import FreetOrEventComponent from '@/components/common/FreetOrEventComponent.vue';
+import EventAnnouncementComponent from '@/components/EventAnnouncements/EventAnnouncementComponent.vue' 
 
 export default {
   name: 'FreetPage',
-  components: {FreetOrEventComponent, GetFreetsForm, CreateFreetForm},
+  components: {FreetComponent, GetFreetsForm, CreateFreetForm, EventAnnouncementComponent},
+  computed: {
+    isEvent() {
+      return this.$store.freetsAssociatedWithEvents.includes(freet.id)
+    }
+  },
   mounted() {
     this.$refs.getFreetsForm.submit();
   }

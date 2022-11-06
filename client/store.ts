@@ -20,11 +20,14 @@ const store = new Vuex.Store({
     eventsFilter: null, // Username to filter shown event announcements by (null = show all)
     eventAnnouncements: [], // All event announcements created in the app
     freetsAssociatedWithEvents: [],
-    freetIdToEventId: new Map(),
+    freetIdToEvent: new Map(),
   },
   getters: {
     getFreetById: (state) => (freetId) => {
       return state.freets.find(freet => freet._id === freetId)
+    },
+    getEventByFreetId: (state) => (freetId) => {
+      return state.eventAnnouncements.find(event => event.associatedFreet === freetId)
     }
   },
   mutations: {
@@ -116,11 +119,11 @@ const store = new Vuex.Store({
 
     for (const event of events) {
       theseAssociatedFreets.push(event.associatedFreet)
-      thisMapping.set(event.associatedFreet, event._id);
+      thisMapping.set(event.associatedFreet, event);
     }
 
     state.freetsAssociatedWithEvents = theseAssociatedFreets;
-    state.freetIdToBookmarkId = thisMapping;
+    state.freetIdToEvent = thisMapping;
   },
   async refreshEventAnnouncements(state) {
     /**
@@ -130,6 +133,18 @@ const store = new Vuex.Store({
     const url = state.eventsFilter ? `/api/users/${state.eventsFilter}/freets` : '/api/events';
     const res = await fetch(url).then(async r => r.json());
     state.eventAnnouncements = res;
+
+    // Record the freetIds of the freets associated with events
+    const theseAssociatedFreets = [];
+    const thisMapping = new Map();
+
+    for (const event of res) {
+      theseAssociatedFreets.push(event.associatedFreet)
+      thisMapping.set(event.associatedFreet, event);
+    }
+
+    state.freetsAssociatedWithEvents = theseAssociatedFreets;
+    state.freetIdToEvent = thisMapping;
   },
 
   

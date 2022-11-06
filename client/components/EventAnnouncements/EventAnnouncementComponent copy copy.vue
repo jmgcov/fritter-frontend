@@ -75,7 +75,6 @@
 
 <script>
 import BookmarkButton from '@/components/Bookmark/BookmarkButton.vue'
-import { mapState } from 'vuex'
 
 export default {
   name: 'EventAnnouncementComponent',
@@ -94,16 +93,12 @@ export default {
     };
   },
   computed: {
-    ...mapState([
-      'freets',
-    ]),
     underlyingFreet() {
-      return this.freets.find(freet => freet._id === this.event.associatedFreet);
-      // console.log('this', this);
-      // console.log('this.$store.getters', this.$store.getters);
-      // const response = this.$store.getters.getFreetById(this.event.associatedFreet);
-      // console.log('getter response', response);
-      // return response;
+      console.log('this', this);
+      console.log('this.$store.getters', this.$store.getters);
+      const response = this.$store.getters.getFreetById(this.event.associatedFreet);
+      console.log('getter response', response);
+      return response;
       // return this.$store.getters.getFreetById(this.event.associatedFreet);
     },
     isCancelled() {
