@@ -24,7 +24,7 @@ const store = new Vuex.Store({
     allLikedFreetIds: [], // the freetIds of all of the freets that are bookmarked by this user
     likedFreets: [], // all of the bookmarked freets
     freetIdToLikeId: new Map(),
-    likeCounts: new Map(),
+    likeCounts: [],
   },
   getters: {
     getFreetById: (state) => (freetId) => {
@@ -117,7 +117,7 @@ const store = new Vuex.Store({
     const theseIds = [];
     const theseFreets = [];
     const thisMapping = new Map();
-    const theseLikeCounts = new Map();
+    const theseLikeCounts = [];
 
     for (const likeResponse of res) {
       theseIds.push(likeResponse.freet);
@@ -128,12 +128,9 @@ const store = new Vuex.Store({
       if (theseIds.includes(freet._id)) {
         theseFreets.push(freet);
       }
-    }
-
-    for (const freetId of theseIds) {
-      const url = '/api/like/count';
+      const url = `/api/like/count?freetId=${freet._id}`;
       const res = await fetch(url).then(async r => r.json());
-      theseLikeCounts.set(freetId, res.likeCount);
+      theseLikeCounts.push({freetId: freet._id, count: res.likeCount});
     }
 
   state.allLikedFreetIds = theseIds;

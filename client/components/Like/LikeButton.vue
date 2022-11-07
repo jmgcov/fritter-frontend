@@ -3,7 +3,7 @@
 <template>
   <div>
     <p>
-      Current Likes: {{ currentLikes }}
+      Current Likes: {{ likeCount }}
     </p>
     <button 
       v-if="isLiked"
@@ -33,23 +33,22 @@ export default {
   },
   data() {
     return {
-      likeId: '', //the likeId for the like of this freet, if any
+      likeId: '', // the likeId for the like of this freet, if any
+      // likeCount: '', // the number of likes for this freet 
     }
   },
   computed: {
-    ...mapState([
-        'likeCounts'
-    ]),
     isLiked() {
       return this.$store.state.allLikedFreetIds.includes(this.freet._id)
     },
     likeCount() {
-      return this.likeCounts.get(this.freet._id);
+      const countObject = this.$store.state.likeCounts.find(countObject => countObject.freetId === this.freet._id);
+      return countObject.count;
     }
   },
   async mounted() {
     // Check whether this freet is liked by this user
-    this.$store.commit('refreshLikes');
+    // this.$store.commit('refreshLikes');
 
     const allLikedFreetIds = this.$store.state.allLikedFreetIds;
 
@@ -66,6 +65,13 @@ export default {
           this.likeId = likeResponse.freet;
         }
       }
+
+      // const countOptions = {
+      //     method: 'GET', headers: {'Content-Type': 'application/json'}
+      // };
+
+      // const countRes = await fetch(`/api/like/count?freetId=${this.freet._id}`, countOptions).then(async r => r.json());
+      // this.likeCount = countRes.likeCount;
     }
   },
   methods: {
@@ -91,7 +97,7 @@ export default {
       const res = await r.json();
       this.likeId = res.like._id;
 
-      this.$store.commit('refreshLikes');
+      // this.$store.commit('refreshLikes');
     },
     removeLike() {
       const params = {
@@ -103,8 +109,8 @@ export default {
         }
       };
 
-      this.$store.commit('refreshLikes');
       this.request(params);
+      // this.$store.commit('refreshLikes');
     },
     async request(params) {
       /**

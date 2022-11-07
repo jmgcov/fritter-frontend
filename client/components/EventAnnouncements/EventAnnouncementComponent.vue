@@ -27,6 +27,9 @@
         v-if="$store.state.username" 
         id="likeAndBookmark"
       >
+        <LikeButton
+          :freet="underlyingFreet"
+        />
         <bookmarkButton 
           :key="componentKey"
           :freet="underlyingFreet"  
@@ -89,11 +92,12 @@
 
 <script>
 import BookmarkButton from '@/components/Bookmark/BookmarkButton.vue'
+import LikeButton from '@/components/Like/LikeButton.vue'
 import { mapState } from 'vuex'
 
 export default {
   name: 'EventAnnouncementComponent',
-  components: {BookmarkButton},
+  components: {BookmarkButton, LikeButton},
   props: {
     // Data from the stored event
     event: {
