@@ -22,6 +22,12 @@
       </router-link>
       <router-link
         v-if="$store.state.username"
+        to="/likes"
+      >
+        Likes
+      </router-link>
+      <router-link
+        v-if="$store.state.username"
         to="/bookmarks"
       >
         Bookmarks

@@ -6,6 +6,7 @@ import LoginPage from './components/Login/LoginPage.vue';
 import NotFound from './NotFound.vue';
 import BookmarksPage from './components/Bookmark/BookmarksPage.vue';
 import EventAnnouncementsPage from './components/EventAnnouncements/EventAnnouncementsPage.vue';
+import LikesPage from './components/Like/LikesPage.vue';
 
 Vue.use(VueRouter);
 
@@ -14,6 +15,7 @@ const routes = [
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '/login', name: 'Login', component: LoginPage},
   {path: '/bookmarks', name: 'Bookmarks', component: BookmarksPage},
+  {path: '/likes', name: 'Likes', component: LikesPage},
   {path: '/event_announcements', name: 'EventAnnouncements', component: EventAnnouncementsPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
@@ -41,6 +43,11 @@ router.beforeEach((to, from, next) => {
     }
 
     if (to.name === 'EventAnnouncements' && !router.app.$store.state.username) {
+      next({name: 'Login'}); // Go to Login page if user navigates to Bookmarks and is not signed in
+      return;
+    }
+
+    if (to.name === 'Likes' && !router.app.$store.state.username) {
       next({name: 'Login'}); // Go to Login page if user navigates to Bookmarks and is not signed in
       return;
     }

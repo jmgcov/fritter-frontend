@@ -70,6 +70,7 @@ export default {
   components: {FreetOrEventComponent, GetFreetsForm, CreateFreetForm},
   mounted() {
     this.$refs.getFreetsForm.submit();
+    this.$store.commit('refreshEventAnnouncements');
   }
 };
 </script>

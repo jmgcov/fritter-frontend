@@ -1,18 +1,18 @@
-<!-- Default page that also displays freets -->
+<!-- Page that displays all freets liked by this user -->
 
 <template>
   <main>
     <section>
       <header>
-        <h2>Viewing @{{ $store.state.username }}'s Bookmarks</h2>
+        <h2>Viewing @{{ $store.state.username }}'s Likes</h2>
       </header>
     </section>
     <section>
       <section
-        v-if="$store.state.allBookmarkedFreetIds.length"
+        v-if="$store.state.allLikedFreetIds.length"
       >
         <FreetOrEventComponent
-          v-for="freet in $store.state.bookmarkedFreets"
+          v-for="freet in $store.state.likedFreets"
           :key="freet.id"
           :freet="freet"
         />
@@ -20,7 +20,7 @@
       <article
         v-else
       >
-        <h3>No bookmarked freets found.</h3>
+        <h3>No liked freets found.</h3>
       </article>
     </section>
   </main>
@@ -28,15 +28,16 @@
 
 <script>
 import FreetOrEventComponent from '@/components/common/FreetOrEventComponent.vue';
-import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
+// import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
 
 export default {
   name: 'FreetPage',
-  components: {FreetOrEventComponent, GetFreetsForm},
+  components: {FreetOrEventComponent},
   mounted() {
     this.$store.commit('updateFilter', null);
     this.$store.commit('refreshFreets');
-    this.$store.commit('refreshBookmarks');
+    this.$store.commit('refreshEventAnnouncements');
+    this.$store.commit('refreshLikes');
   }
 };
 </script>

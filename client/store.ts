@@ -17,10 +17,14 @@ const store = new Vuex.Store({
     bookmarkedFreets: [], // all of the bookmarked freets
     freetIdToBookmarkId: new Map(),
 
-    eventsFilter: null, // Username to filter shown event announcements by (null = show all)
     eventAnnouncements: [], // All event announcements created in the app
     freetsAssociatedWithEvents: [],
     freetIdToEvent: new Map(),
+
+    allLikedFreetIds: [], // the freetIds of all of the freets that are bookmarked by this user
+    likedFreets: [], // all of the bookmarked freets
+    freetIdToLikeId: new Map(),
+    likeCounts: new Map(),
   },
   getters: {
     getFreetById: (state) => (freetId) => {
@@ -69,8 +73,10 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     },
+
+    // bookmarks
     async refreshBookmarks(state) {
-      console.log('refreshBookmarks');
+      // console.log('refreshBookmarks');
 
       const options = {
         method: 'GET', headers: {'Content-Type': 'application/json'}
@@ -97,6 +103,44 @@ const store = new Vuex.Store({
     state.bookmarkedFreets = theseFreets;
     state.freetIdToBookmarkId = thisMapping;
   },
+
+  // likes
+  async refreshLikes(state) {
+    // console.log('refreshBookmarks');
+
+    const options = {
+      method: 'GET', headers: {'Content-Type': 'application/json'}
+    };
+
+    const res = await fetch(`/api/like?username=${state.username}`, options).then(async r => r.json());
+
+    const theseIds = [];
+    const theseFreets = [];
+    const thisMapping = new Map();
+    const theseLikeCounts = new Map();
+
+    for (const likeResponse of res) {
+      theseIds.push(likeResponse.freet);
+      thisMapping.set(likeResponse.freet, likeResponse._id);
+    }
+
+    for (const freet of state.freets) {
+      if (theseIds.includes(freet._id)) {
+        theseFreets.push(freet);
+      }
+    }
+
+    for (const freetId of theseIds) {
+      const url = '/api/like/count';
+      const res = await fetch(url).then(async r => r.json());
+      theseLikeCounts.set(freetId, res.likeCount);
+    }
+
+  state.allLikedFreetIds = theseIds;
+  state.likedFreets = theseFreets;
+  state.freetIdToLikeId = thisMapping;
+  state.likeCounts = theseLikeCounts;
+},
 
   // Event Announcements
   updateEventsFilter(state, filter) {
@@ -130,17 +174,23 @@ const store = new Vuex.Store({
      * Request the server for the currently available freets.
      */
     // TODO - is this a valid route?  Need to carry over changes to starter code?
-    const url = state.eventsFilter ? `/api/users/${state.eventsFilter}/freets` : '/api/events';
-    const res = await fetch(url).then(async r => r.json());
+    state.eventsFilter = null;
+    
+    const options = {
+      method: 'GET', headers: {'Content-Type': 'application/json'}
+    };
+
+    const res = await fetch(`/api/events`, options).then(async r => r.json());
+
     state.eventAnnouncements = res;
 
     // Record the freetIds of the freets associated with events
     const theseAssociatedFreets = [];
     const thisMapping = new Map();
 
-    for (const event of res) {
-      theseAssociatedFreets.push(event.associatedFreet)
-      thisMapping.set(event.associatedFreet, event);
+    for (const eventResponse of res) {
+      theseAssociatedFreets.push(eventResponse.associatedFreet)
+      thisMapping.set(eventResponse.associatedFreet, eventResponse);
     }
 
     state.freetsAssociatedWithEvents = theseAssociatedFreets;

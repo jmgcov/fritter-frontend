@@ -40,6 +40,9 @@ export default {
       return this.eventAnnouncements.find(event => event.associatedFreet === this.freet._id)
     }
   },
+  async mounted() {
+    this.$store.commit('refreshEventAnnouncements');
+  }
 };
 </script>
 

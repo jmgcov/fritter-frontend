@@ -5,7 +5,13 @@
   <article
     class="event"
   >
-    <header>
+    <header
+      v-if="!underlyingFreet"
+      class="loading"
+    />
+    <header
+      v-else 
+    >
       <div
         v-if="isCancelled"
         id="cancellationStatus"
@@ -13,7 +19,7 @@
         <h4>CANCELLED</h4>
       </div>
       <h3
-        v-if="underlyingFreet"
+        v-else
       >
         @{{ underlyingFreet.author }}
       </h3>
@@ -53,14 +59,22 @@
     >
       Event Location:  {{ event.eventLocation }}
     </p>
-    <p
-      class="content"
+    <div
+      v-if="!underlyingFreet"
+      class="loading"
+    />
+    <div
+      v-else 
     >
-      {{ underlyingFreet.content }}
-    </p>
-    <p class="info">
-      Posted at {{ underlyingFreet.dateModified }}
-    </p>
+      <p
+        class="content"
+      >
+        {{ underlyingFreet.content }}
+      </p>
+      <p class="info">
+        Posted at {{ underlyingFreet.dateModified }}
+      </p>
+    </div>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"

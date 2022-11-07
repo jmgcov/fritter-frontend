@@ -13,19 +13,7 @@
         <div class="left">
           <h2>
             Viewing all Event Announcements
-            <span v-if="$store.state.eventsFilter">
-              by @{{ $store.state.eventsFilter }}
-            </span>
           </h2>
-        </div>
-        <div class="right">
-          <GetEventAnnouncementsForm
-            ref="getEventAnnouncementsForm"
-            value="author"
-            placeholder="🔍 Filter by author (optional)"
-            button="🔄 Get event announcements"
-            user="$store.state.username"
-          />
         </div>
       </header>
       <section
@@ -49,15 +37,15 @@
 <script>
 import EventAnnouncementComponent from '@/components/EventAnnouncements/EventAnnouncementComponent.vue';
 import CreateEventAnnouncementForm from '@/components/EventAnnouncements/CreateEventAnnouncementForm.vue';
-import GetEventAnnouncementsForm from '@/components/EventAnnouncements/GetEventAnnouncementsForm.vue';
 
 export default {
   name: 'EventAnnouncementsPage',
-  components: {EventAnnouncementComponent, GetEventAnnouncementsForm, CreateEventAnnouncementForm},
+  components: {EventAnnouncementComponent, CreateEventAnnouncementForm},
   mounted() {
-    this.$refs.getEventAnnouncementsForm.submit();
-    // this.$store.commit('refreshFreets');
-    // this.$store.commit('refreshEventAnnouncements');
+    // this.$refs.getEventAnnouncementsForm.submit();
+    this.$store.commit('updateFilter', null);
+    this.$store.commit('refreshFreets');
+    this.$store.commit('refreshEventAnnouncements');
   }
 };
 </script>
