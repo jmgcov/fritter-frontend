@@ -13,6 +13,9 @@
         v-if="$store.state.username" 
         id="likeAndBookmark"
       >
+        <LikeButton
+          :freet="freet"
+        />
         <bookmarkButton 
           :key="componentKey"
           :freet="freet"  
@@ -75,10 +78,11 @@
 
 <script>
 import BookmarkButton from '@/components/Bookmark/BookmarkButton.vue'
+import LikeButton from '@/components/Like/LikeButton.vue'
 
 export default {
   name: 'FreetComponent',
-  components: {BookmarkButton},
+  components: {BookmarkButton, LikeButton},
   props: {
     // Data from the stored freet
     freet: {
