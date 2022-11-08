@@ -22,7 +22,7 @@ const store = new Vuex.Store({
     freetIdToEvent: new Map(),
 
     allLikedFreetIds: [], // the freetIds of all of the freets that are bookmarked by this user
-    likedFreets: [], // all of the bookmarked freets
+    likedFreets: [], // all of the liked freets
     freetIdToLikeId: new Map(),
     likeCounts: [],
   },
@@ -106,7 +106,7 @@ const store = new Vuex.Store({
 
   // likes
   async refreshLikes(state) {
-    // console.log('refreshBookmarks');
+    console.log('refreshLikes');
 
     const options = {
       method: 'GET', headers: {'Content-Type': 'application/json'}
@@ -117,7 +117,7 @@ const store = new Vuex.Store({
     const theseIds = [];
     const theseFreets = [];
     const thisMapping = new Map();
-    const theseLikeCounts = [];
+    // const theseLikeCounts = [];
 
     for (const likeResponse of res) {
       theseIds.push(likeResponse.freet);
@@ -128,15 +128,22 @@ const store = new Vuex.Store({
       if (theseIds.includes(freet._id)) {
         theseFreets.push(freet);
       }
-      const url = `/api/like/count?freetId=${freet._id}`;
-      const res = await fetch(url).then(async r => r.json());
-      theseLikeCounts.push({freetId: freet._id, count: res.likeCount});
     }
+    //   const url = `/api/like/count?freetId=${freet._id}`;
+    //   const res = await fetch(url).then(async r => r.json());
+    //   theseLikeCounts.push({freetId: freet._id, count: res.likeCount});
+    // }
 
   state.allLikedFreetIds = theseIds;
   state.likedFreets = theseFreets;
   state.freetIdToLikeId = thisMapping;
+  // state.likeCounts = theseLikeCounts;
+
+  console.log('refreshing like counts');
+  const theseLikeCounts =  await fetch('/api/like/count').then(async r => r.json());
+  console.log('theseLikeCounts', theseLikeCounts);
   state.likeCounts = theseLikeCounts;
+  console.log('state.likeCounts', theseLikeCounts);
 },
 
   // Event Announcements

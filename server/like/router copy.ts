@@ -1,7 +1,6 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
 import LikeCollection from './collection';
-import FreetCollection from 'server/freet/collection';
 import * as userValidator from '../user/middleware';
 import * as likeValidator from '../like/middleware';
 import * as freetValidator from '../freet/middleware';
@@ -124,16 +123,6 @@ router.delete(
  */
 router.get(
   '/count',
-  async (req: Request, res: Response, next: NextFunction) => {
-    // Check if username query parameter was supplied
-    if (req.query.freetId !== undefined) {
-      next();
-      return;
-    }
-
-    const response = await LikeCollection.countAllLikes();
-    res.status(200).json(response);
-  },
   [
     freetValidator.isFreetExistsQueryVersion
   ],

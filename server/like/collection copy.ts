@@ -98,19 +98,6 @@ class LikeCollection {
     const count = await LikeModel.countDocuments({freet: freetId});
     return count;
   }
-
-  /**
-   * Count all Likes for all the freets
-   */
-  static async countAllLikes() {
-    const allFreets = await FreetCollection.findAll();
-    const response = [];
-    for (const freet of allFreets) {
-      response.push({freetId: freet._id, likeCount: await LikeModel.countDocuments({freet: freet._id})});
-    }
-
-    return response;
-  }
 }
 
 export default LikeCollection;

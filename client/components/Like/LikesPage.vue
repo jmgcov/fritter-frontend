@@ -13,7 +13,7 @@
       >
         <FreetOrEventComponent
           v-for="freet in $store.state.likedFreets"
-          :key="freet.id"
+          :key="freet._id"
           :freet="freet"
         />
       </section>

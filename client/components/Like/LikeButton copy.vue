@@ -1,9 +1,7 @@
 <!-- Reusable component representing a single like button and its actions -->
 
 <template>
-  <div 
-    v-if="!loading"
-  >
+  <div>
     <p>
       Current Likes: {{ likeCount }}
     </p>
@@ -35,31 +33,23 @@ export default {
   },
   data() {
     return {
-      loading: true,
-      likeId: '', // the likeId for this user's like of this freet, if any
-      likeCount: 0,
-      isLiked: null,
-      // manualLike: false,
+      likeId: '', // the likeId for the like of this freet, if any
+      manualLike: false,
       // likeCount: '', // the number of likes for this freet 
     }
   },
   computed: {
-    // isLiked() {
-    //   return this.$store.state.allLikedFreetIds.includes(this.freet._id) || this.manualLike 
-    // },
-    // likeCount() {
-    //   const countObject = this.$store.state.likeCounts.find(countObject => countObject.freetId === this.freet._id);
-    //   return countObject.likeCount;
-    // }
+    isLiked() {
+      return this.$store.state.allLikedFreetIds.includes(this.freet._id) || this.manualLike 
+    },
+    likeCount() {
+      const countObject = this.$store.state.likeCounts.find(countObject => countObject.freetId === this.freet._id);
+      return countObject.likeCount;
+    }
   },
   async mounted() {
-    // check if this post is liked by this user
-    this.isLiked = this.$store.state.allLikedFreetIds.includes(this.freet._id);
-    this.loading = false;
-    
-    // set the like count
-    const countObject = this.$store.state.likeCounts.find(countObject => countObject.freetId === this.freet._id);
-    this.likeCount = countObject.likeCount;
+    // Check whether this freet is liked by this user
+    // this.$store.commit('refreshLikes');
 
     const allLikedFreetIds = this.$store.state.allLikedFreetIds;
 
@@ -87,9 +77,6 @@ export default {
   },
   methods: {
     async addLike() {
-      this.likeCount += 1;
-      this.isLiked = true;
-
       const params = {
         method: 'POST',
         message: 'Successfully added like!',
@@ -111,13 +98,10 @@ export default {
       const res = await r.json();
       this.likeId = res.like._id;
 
-      console.log('from add like');
+      this.manualLike = true;
       this.$store.commit('refreshLikes');
     },
     removeLike() {
-      this.likeCount -= 1;
-      this.isLiked = false;
-
       const params = {
         method: 'DELETE',
         callback: () => {
@@ -127,8 +111,8 @@ export default {
         }
       };
 
+      this.manualLike = false;
       this.request(params);
-      console.log('from remove like');
       this.$store.commit('refreshLikes');
     },
     async request(params) {
