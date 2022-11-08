@@ -8,12 +8,14 @@
       Current Likes: {{ likeCount }}
     </p>
     <button 
+      class="btn"
       v-if="isLiked"
       @click="removeLike"
     >
       Unlike 
     </button>
-    <button 
+    <button
+      class="btn" 
       v-else
       @click="addLike"
     >
