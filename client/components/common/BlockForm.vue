@@ -1,5 +1,6 @@
 <!-- Reusable component representing a form in a block style -->
 <!-- This is just an example; feel free to define any reusable components you want! -->
+<!-- citation: used (here and elsewhere in the project) character count code from https://stackoverflow.com/questions/43460598/vuejs-character-counter accessed on 11/8/2022-->
 
 <template>
   <form @submit.prevent="submit">
@@ -13,18 +14,28 @@
       >
         <label :for="field.id">{{ field.label }}:</label>
         <input
-          v-if="field.id === 'eventDate'"
-          type="datetime-local"
-          :name="field.id"
-          :value="field.value"
-          @input="field.value = $event.target.value"
-        /> 
+        v-if="field.id === 'eventDate'"
+        type="datetime-local"
+        min="2022-11-07T23:59"
+        :name="field.id"
+        :value="field.value"
+        @input="field.value = $event.target.value"
+        />
         <textarea
           v-if="field.id === 'content' || field.id === 'eventDescription'"
+          class="textarea textarea-primary"
+          maxlength="140"
+
           :name="field.id"
           :value="field.value"
           @input="field.value = $event.target.value"
         />
+        <label 
+          v-if="field.id === 'content' || field.id === 'eventDescription'"
+          class="label" 
+        >
+          <span class="label-text-alt">{{ 140 - field.value.length }}/140 characters remaining</span>
+        </label> 
         <input
           v-if="field.id !== 'content' && field.id !== 'eventDate' && field.id !== 'eventDescription' "
           :type="field.id === 'password' ? 'password' : 'text'"
@@ -37,7 +48,8 @@
     <article v-else>
       <p>{{ content }}</p>
     </article>
-    <button
+    <button 
+      class="btn bg-orange-700"
       type="submit"
     >
       {{ title }}

@@ -2,78 +2,79 @@
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <article
-    class="freet"
+  <div
+    class="card bg-base-100 shadow-2xl border-solid border-black border"
   >
-    <header>
-      <h3 class="author">
-        @{{ freet.author }}
-      </h3>
-      <div
-        v-if="$store.state.username" 
-        id="likeAndBookmark"
+    <div class="card-body">
+      <h2 class="card-title">@{{ freet.author }}</h2>
+      <textarea
+        v-if="editing"
+        class="textarea textarea-primary"
+        :value="draft"
+        @input="draft = $event.target.value"
+      />
+      <label 
+        v-if="editing" 
+        class="label" 
       >
-        <LikeButton
-          :freet="freet"
-        />
-        <bookmarkButton 
-          :key="componentKey"
-          :freet="freet"  
-        />
+        <span class="label-text-alt">{{ 140 - draft.length }}/140 characters remaining</span>
+      </label> 
+      <p
+        v-if="!editing"
+        class="content"
+      >
+        {{ freet.content }}
+      </p>
+      <div class="card-actions justify-left flex-row space-x-4">
+        <div
+          class="btn-group"
+          v-if="$store.state.username" 
+        >
+          <LikeButton
+            :freet="freet"
+          />
+        </div>
+        <div
+          class="btn-group"
+          v-if="$store.state.username" 
+        >
+          <bookmarkButton
+            :key="componentKey"
+            :freet="freet"  
+          />
+        </div>
+        <div 
+          class="btn-group"
+          v-if="$store.state.username === freet.author"
+        >
+          <button
+            class="btn" 
+            v-if="editing"
+            @click="submitEdit"
+          >
+            Save changes  
+          </button>
+          <button
+            class="btn"
+            v-if="editing"
+            @click="stopEditing"
+          >
+            Discard changes 
+          </button>
+          <button
+            class="btn"
+            v-if="!editing"
+            @click="startEditing"
+          >
+            ✏️ Edit
+          </button>
+          <button class="btn" @click="deleteFreet">
+            🗑️ Delete
+          </button>
+        </div>
       </div>
-      <div
-        v-if="$store.state.username === freet.author"
-        class="actions"
-      >
-        <button
-          v-if="editing"
-          @click="submitEdit"
-        >
-          ✅ Save changes
-        </button>
-        <button
-          v-if="editing"
-          @click="stopEditing"
-        >
-          🚫 Discard changes
-        </button>
-        <button
-          v-if="!editing"
-          @click="startEditing"
-        >
-          ✏️ Edit
-        </button>
-        <button @click="deleteFreet">
-          🗑️ Delete
-        </button>
-      </div>
-    </header>
-    <textarea
-      v-if="editing"
-      class="content"
-      :value="draft"
-      @input="draft = $event.target.value"
-    />
-    <p
-      v-else
-      class="content"
-    >
-      {{ freet.content }}
-    </p>
-    <p class="info">
-      Posted at {{ freet.dateModified }}
-      <i v-if="freet.edited">(edited)</i>
-    </p>
-    <section class="alerts">
-      <article
-        v-for="(status, alert, index) in alerts"
-        :key="index"
-        :class="status"
-      >
-        <p>{{ alert }}</p>
-      </article>
-    </section>
-  </article>
+    </div>
+  </div>
 </template>
 
 <script>

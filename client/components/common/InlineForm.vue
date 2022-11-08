@@ -6,9 +6,10 @@
     <input
       v-model="value"
       type="text"
+      class="input w-full input-bordered bg-white-500 max-w-xs"
       :placeholder="placeholder"
     >
-    <button
+    <button class="btn bg-orange-700"
       type="submit"
     >
       {{ button }}

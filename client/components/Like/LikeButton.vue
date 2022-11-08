@@ -1,25 +1,21 @@
 <!-- Reusable component representing a single like button and its actions -->
 
 <template>
-  <div 
+  <div
+    class="btn" 
     v-if="!loading"
   >
-    <p>
-      Current Likes: {{ likeCount }}
-    </p>
     <button 
-      class="btn"
       v-if="isLiked"
       @click="removeLike"
     >
-      Unlike 
+      🤍 Remove Like (count: {{ likeCount }})
     </button>
     <button
-      class="btn" 
       v-else
       @click="addLike"
     >
-      Like This Post
+      ♡ Like (count: {{ likeCount }})
     </button>
   </div>
 </template>
@@ -39,7 +35,7 @@ export default {
     return {
       loading: true,
       likeId: '', // the likeId for this user's like of this freet, if any
-      likeCount: 0,
+      likeCount: null,
       isLiked: null,
       // manualLike: false,
       // likeCount: '', // the number of likes for this freet 

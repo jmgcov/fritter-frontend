@@ -1,18 +1,18 @@
 <!-- Reusable component representing a single bookmark button and its actions -->
 
 <template>
-  <div>
+  <div class="btn">
     <button 
       v-if="isBookmarked"
       @click="removeBookmark"
     >
-      Remove Bookmark 
+      🔖 Remove Bookmark 
     </button>
     <button 
       v-else
       @click="addBookmark"
     >
-      🔖 Add Bookmark 
+      Add Bookmark 
     </button>
   </div>
 </template>

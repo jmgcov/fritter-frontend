@@ -1,71 +1,7 @@
 <!-- Reusable component representing a single freet and its actions -->
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
-
 <template>
-  <article
-    v-if="!underlyingFreet" 
-    class="loading" 
-  />
-  <article
-    v-else
-    class="card bg-accent text-accent-content shadow-2xl border-solid border-black border"
-  >
-    <div class="card-body">
-      <div v-if="isCancelled" class="badge badge-warning">CANCELLED</div>
-      <div class="badge badge-primary">EVENT ANNOUNCEMENT</div>
-      <h2 class="card-title">@{{ underlyingFreet.author }}</h2>
-      <p> <span class="font-bold">Event Title:</span>   {{ event.eventSubject }}</p>
-      <p> <span class="font-bold">Date and Time:</span>  {{ event.eventDate }}</p>
-      <p> <span class="font-bold">Event Location:</span>  {{ event.eventLocation }}</p>
-      <div v-if="!underlyingFreet" class="loading" />
-      <div v-else>
-        <p> {{ underlyingFreet.content }}</p>
-      </div>
-      <div class="card-actions justify-left flex-row space-x-4">
-        <div
-          class="btn-group"
-          v-if="$store.state.username" 
-        >
-          <LikeButton
-            :freet="underlyingFreet"
-          />
-        </div>
-        <div
-          class="btn-group"
-          v-if="$store.state.username" 
-        >
-          <bookmarkButton
-            :key="componentKey"
-            :freet="underlyingFreet"  
-          />
-        </div>
-        <div
-          v-if="$store.state.username === underlyingFreet.author"
-          class="btn-group"
-        >
-          <button class="btn btn-warning text-warning-content"
-            v-if="!isCancelled"
-            @click="cancelEvent"
-          >
-            Cancel Event
-          </button>
-        </div>
-        <section class="alerts">
-          <article
-            v-for="(status, alert, index) in alerts"
-            :key="index"
-            :class="status"
-          >
-            <p>{{ alert }}</p>
-          </article>
-        </section>
-      </div>
-    </div>
-  </article>
-</template>
-
-<!-- <template>
   <article
     class="event"
   >
@@ -152,7 +88,7 @@
       </article>
     </section>
   </article>
-</template> -->
+</template>
 
 <script>
 import BookmarkButton from '@/components/Bookmark/BookmarkButton.vue'

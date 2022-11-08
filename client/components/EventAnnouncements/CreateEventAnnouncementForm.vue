@@ -26,6 +26,6 @@ export default {
         setTimeout(() => this.$delete(this.alerts, message), 3000);
       }
     };
-  }
+  },
 };
 </script>
