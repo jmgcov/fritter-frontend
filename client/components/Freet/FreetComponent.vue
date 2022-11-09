@@ -44,6 +44,7 @@
             :freet="freet"  
           />
         </div>
+        <div v-if="!$store.state.inReaderMode">
         <div 
           class="btn-group"
           v-if="$store.state.username === freet.author"
@@ -72,6 +73,7 @@
           <button class="btn" @click="deleteFreet">
             🗑️ Delete
           </button>
+        </div>
         </div>
       </div>
     </div>

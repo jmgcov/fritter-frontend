@@ -3,11 +3,11 @@
 <!-- This navbar takes advantage of both flex and grid layouts for positioning elements; feel free to redesign as you see fit! -->
 
 <template>
-  <nav v-if="!$store.state.inReaderMode">
+  <nav>
     <div class="left">
       <img src="../../public/logo.svg">
       <h1 class="title">
-        fritter
+        Fritter
       </h1>
     </div>
     <div class="right">
@@ -44,7 +44,6 @@
       >
         Login
       </router-link>
-      <ReaderModeButton v-if="!$store.state.inReaderMode" />
     </div>
     <section class="alerts">
       <article
@@ -57,15 +56,6 @@
     </section>
   </nav>
 </template>
-
-<script>
-import ReaderModeButton from '@/components/ReaderMode/ReaderModeButton.vue'
-
-export default {
-  name: 'NavBar',
-  components: {ReaderModeButton},
-};
-</script>
 
 <style scoped>
 nav {

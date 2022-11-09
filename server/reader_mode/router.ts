@@ -2,7 +2,7 @@ import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
 import ReaderModeCollection from './collection';
 import * as userValidator from '../user/middleware';
-import * as readerModeValidator from '../readerMode/middleware';
+import * as readerModeValidator from './middleware';
 // Import * as util from './util';
 
 const router = express.Router();
@@ -21,7 +21,7 @@ router.get(
     userValidator.isUserLoggedIn
   ],
   async (req: Request, res: Response) => {
-    const readerMode = await ReaderModeCollection.findOneByUserId(req.params.userId);
+    const readerMode = await ReaderModeCollection.findOneByUserId(req.session.userId);
     res.status(200).json(readerMode);
   }
 );
@@ -69,23 +69,23 @@ router.put(
   }
 );
 
-/**
- * Get the current user's readerMode
- *
- * @name GET /api/readerMode
- *
- * @return {string} - a success message
- * @throws {403} - if the user is not logged in
- */
-router.get(
-  '/',
-  [
-    userValidator.isUserLoggedIn
-  ],
-  async (req: Request, res: Response) => {
-    const readerMode = await ReaderModeCollection.findOneByUserId(req.params.userId);
-    res.status(200).json(readerMode);
-  }
-);
+// /**
+//  * Get the current user's readerMode
+//  *
+//  * @name GET /api/readerMode
+//  *
+//  * @return {string} - a success message
+//  * @throws {403} - if the user is not logged in
+//  */
+// router.get(
+//   '/',
+//   [
+//     userValidator.isUserLoggedIn
+//   ],
+//   async (req: Request, res: Response) => {
+//     const readerMode = await ReaderModeCollection.findOneByUserId(req.params.userId);
+//     res.status(200).json(readerMode);
+//   }
+// );
 
 export {router as readerModeRouter};

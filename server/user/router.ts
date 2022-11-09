@@ -7,7 +7,7 @@ import * as util from './util';
 import BookmarkCollection from '../bookmark/collection';
 import EventCollection from '../event_announcement/collection';
 import LikeCollection from '../like/collection';
-import ReaderModeCollection from '../readerMode/collection';
+import ReaderModeCollection from '../reader_mode/collection';
 
 const router = express.Router();
 

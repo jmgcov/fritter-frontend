@@ -1,6 +1,7 @@
 <!-- Reusable component representing a single like button and its actions -->
 
 <template>
+  <div v-if="!$store.state.inReaderMode">
   <div
     class="btn" 
     v-if="!loading"
@@ -18,6 +19,7 @@
       ♡ Like (count: {{ likeCount }})
     </button>
   </div>
+</div>
 </template>
 
 <script>

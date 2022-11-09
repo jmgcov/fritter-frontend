@@ -4,7 +4,7 @@
   <main>
     <section v-if="$store.state.username">
       <header>
-        <h2>Welcome @{{ $store.state.username }}</h2>
+        <h2 class="py-4">Welcome @{{ $store.state.username }}</h2>
       </header>
       <CreateFreetForm />
     </section>

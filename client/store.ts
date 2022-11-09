@@ -25,6 +25,7 @@ const store = new Vuex.Store({
     likedFreets: [], // all of the liked freets
     freetIdToLikeId: new Map(),
     likeCounts: [],
+    inReaderMode: false,
   },
   getters: {
     getFreetById: (state) => (freetId) => {
@@ -139,21 +140,12 @@ const store = new Vuex.Store({
   state.freetIdToLikeId = thisMapping;
   // state.likeCounts = theseLikeCounts;
 
-  console.log('refreshing like counts');
+
   const theseLikeCounts =  await fetch('/api/like/count').then(async r => r.json());
-  console.log('theseLikeCounts', theseLikeCounts);
   state.likeCounts = theseLikeCounts;
-  console.log('state.likeCounts', theseLikeCounts);
 },
 
   // Event Announcements
-  updateEventsFilter(state, filter) {
-    /**
-     * Update the stored event announcements filter to the specified one.
-     * @param filter - Username of the user to filter events by
-     */
-    state.eventsFilter = filter;
-  },
   updateEventAnnouncements(state, events) {
     /**
      * Update the stored event announcements to the provided event announcements.
@@ -178,7 +170,6 @@ const store = new Vuex.Store({
      * Request the server for the currently available freets.
      */
     // TODO - is this a valid route?  Need to carry over changes to starter code?
-    state.eventsFilter = null;
     
     const options = {
       method: 'GET', headers: {'Content-Type': 'application/json'}
@@ -199,6 +190,13 @@ const store = new Vuex.Store({
 
     state.freetsAssociatedWithEvents = theseAssociatedFreets;
     state.freetIdToEvent = thisMapping;
+  },
+  updateReaderMode(state, value) {
+    /**
+     * Update the stored freets filter to the specified one.
+     * @param filter - Username of the user to fitler freets by
+     */
+    state.inReaderMode = value;
   },
 
   

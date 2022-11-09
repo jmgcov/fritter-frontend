@@ -4,7 +4,7 @@ import LikeCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as likeValidator from '../like/middleware';
 import * as freetValidator from '../freet/middleware';
-import * as readerModeValidator from '../readerMode/middleware';
+import * as readerModeValidator from '../reader_mode/middleware';
 import * as util from './util';
 
 const router = express.Router();

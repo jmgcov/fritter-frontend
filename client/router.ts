@@ -7,6 +7,7 @@ import NotFound from './NotFound.vue';
 import BookmarksPage from './components/Bookmark/BookmarksPage.vue';
 import EventAnnouncementsPage from './components/EventAnnouncements/EventAnnouncementsPage.vue';
 import LikesPage from './components/Like/LikesPage.vue';
+import ReaderModePage from './components/ReaderMode/ReaderModePage.vue';
 
 Vue.use(VueRouter);
 
@@ -17,6 +18,7 @@ const routes = [
   {path: '/bookmarks', name: 'Bookmarks', component: BookmarksPage},
   {path: '/likes', name: 'Likes', component: LikesPage},
   {path: '/event_announcements', name: 'EventAnnouncements', component: EventAnnouncementsPage},
+  {path: '/readermode', name: 'ReaderMode', component: ReaderModePage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
 
@@ -51,6 +53,38 @@ router.beforeEach((to, from, next) => {
       next({name: 'Login'}); // Go to Login page if user navigates to Bookmarks and is not signed in
       return;
     }
+
+    if (to.name === 'ReaderMode' && !router.app.$store.state.username) {
+      next({name: 'Login'}); // Go to Login page if user navigates to Bookmarks and is not signed in
+      return;
+    }
+
+    if (to.name === 'Bookmarks' && !router.app.$store.state.username) {
+      next({name: 'Login'}); // Go to Login page if user navigates to Bookmarks and is not signed in
+      return;
+    }
+
+    if (to.name === 'Home' && router.app.$store.state.inReaderMode === true) {
+      next({name: 'ReaderMode'}); // Go to ReaderMode page if user in ReaderMode
+      return;
+    }
+
+    if (to.name === 'EventAnnouncements' && router.app.$store.state.inReaderMode === true) {
+      next({name: 'ReaderMode'}); // Go to ReaderMode page if user in ReaderMode
+      return;
+    }
+
+    if (to.name === 'Likes' && router.app.$store.state.inReaderMode === true) {
+      next({name: 'ReaderMode'}); // Go to ReaderMode page if user in ReaderMode
+      return;
+    }
+
+    if (to.name === 'Bookmarks' && router.app.$store.state.inReaderMode === true) {
+      next({name: 'ReaderMode'}); // Go to ReaderMode page if user in ReaderMode
+      return;
+    }
+
+
   }
 
   next();

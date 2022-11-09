@@ -3,7 +3,7 @@ import express from 'express';
 import EventCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as eventValidator from '../event_announcement/middleware';
-import * as readerModeValidator from '../readerMode/middleware';
+import * as readerModeValidator from '../reader_mode/middleware';
 import * as util from './util';
 import FreetCollection from '../freet/collection';
 

@@ -12,7 +12,7 @@ import {freetRouter} from '../server/freet/router';
 import {bookmarkRouter} from '../server/bookmark/router';
 import {likeRouter} from '../server/like/router';
 import {eventRouter} from '../server/event_announcement/router';
-import {readerModeRouter} from '../server/readerMode/router';
+import {readerModeRouter} from '../server/reader_mode/router';
 import MongoStore from 'connect-mongo';
 
 // Load environmental variables
@@ -77,7 +77,7 @@ app.use('/api/freets', freetRouter);
 app.use('/api/bookmark', bookmarkRouter);
 app.use('/api/like', likeRouter);
 app.use('/api/events', eventRouter);
-app.use('/api/readerMode', readerModeRouter);
+app.use('/api/readermode', readerModeRouter);
 
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {
