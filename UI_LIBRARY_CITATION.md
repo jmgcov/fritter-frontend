@@ -1,0 +1,1 @@
+Various elements of this project use the DaisyUI component library, available at https://daisyui.com/ , accessed: 11/8/2022.

@@ -44,7 +44,7 @@
       >
         Login
       </router-link>
-      <ReaderModeButton v-if="!$store.state.inReaderMode" />
+      <ReaderModeButton v-if="!$store.state.inReaderMode && $store.state.username" />
     </div>
     <section class="alerts">
       <article
