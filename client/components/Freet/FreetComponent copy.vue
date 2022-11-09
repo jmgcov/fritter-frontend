@@ -31,7 +31,6 @@
           v-if="$store.state.username" 
         >
           <LikeButton
-            :key="componentKey"
             :freet="freet"
           />
         </div>

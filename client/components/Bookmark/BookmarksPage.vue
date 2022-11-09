@@ -36,7 +36,9 @@ export default {
   mounted() {
     this.$store.commit('updateFilter', null);
     this.$store.commit('refreshFreets');
+    this.$store.commit('refreshEventAnnouncements');
     this.$store.commit('refreshBookmarks');
+    this.$store.commit('refreshLikes');
   }
 };
 </script>

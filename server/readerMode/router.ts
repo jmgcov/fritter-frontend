@@ -8,6 +8,25 @@ import * as readerModeValidator from '../readerMode/middleware';
 const router = express.Router();
 
 /**
+ * Get the current user's readerMode
+ *
+ * @name GET /api/readerMode
+ *
+ * @return {string} - a success message
+ * @throws {403} - if the user is not logged in
+ */
+router.get(
+  '/',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const readerMode = await ReaderModeCollection.findOneByUserId(req.params.userId);
+    res.status(200).json(readerMode);
+  }
+);
+
+/**
  * Enter readerMode
  *
  * @name PUT /api/readerMode/enter
@@ -47,6 +66,25 @@ router.put(
     res.status(200).json({
       message: 'Your have now exited Reader Mode, and have returned to the default browsing mode.'
     });
+  }
+);
+
+/**
+ * Get the current user's readerMode
+ *
+ * @name GET /api/readerMode
+ *
+ * @return {string} - a success message
+ * @throws {403} - if the user is not logged in
+ */
+router.get(
+  '/',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const readerMode = await ReaderModeCollection.findOneByUserId(req.params.userId);
+    res.status(200).json(readerMode);
   }
 );
 
